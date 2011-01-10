@@ -2,6 +2,7 @@
 class PastieSnippet extends DataObject {
 	
 	static $db = array(
+		'Title' => 'Varchar',
 		'Content' => 'Text',
 		'Language' => 'Varchar',
 		'Reference' => 'Varchar',

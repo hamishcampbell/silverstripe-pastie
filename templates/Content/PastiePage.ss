@@ -1,23 +1,12 @@
 $Content
 
-<% if Snippet %>
-	$Snippet
-	
-	<% control Snippet %>
-	<p><a href='$Top.Link(raw)/$Reference'>View as plain text</a></p>
-	
-	<% if Parent %>
-		<p>Parent pastie:</p>
-		<% include PastieParentList %>
-	<% end_if %>
-	
-	<% if Children %>
-		<p>Child pasties:</p>
-		<% include PastieChildList %>
-	<% end_if %>
-	
-	<% end_control %>
-	
+<h3>Latest Snippets</h3>
+<% if LatestSnippets %>
+	<ul>
+		<% control LatestSnippets %>
+			<li><a href="$Top.Link(show)/$Reference"><% include PastieSnippetTitle %></a></li>
+		<% end_control %>
+	</ul>
 <% else %>
-	<p class='message bad'>Not Found</p>
+	<p><em>No snippets found!</em></p>
 <% end_if %>
