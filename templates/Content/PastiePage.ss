@@ -1,6 +1,6 @@
 $Content
 
-<h3>Latest Snippets</h3>
+<h3><% _t('LATESTSNIPPETS', 'Latest Snippets') %></h3>
 <% if LatestSnippets %>
 	<ul>
 		<% control LatestSnippets %>
@@ -8,5 +8,5 @@ $Content
 		<% end_control %>
 	</ul>
 <% else %>
-	<p><em>No snippets found!</em></p>
+	<p><em><% _t('NOSNIPPETSFOUND', 'No recent Snippets found.') %></em></p>
 <% end_if %>

@@ -1,8 +1,24 @@
 <?php
+/**
+ * Pastie Page Source File
+ * @package pastie
+ * @subpackage core
+ * @author Hamish Campbell <hn.campbell@gmail.com>
+ */
+
+/**
+ * Pastie Page
+ * 
+ * Provides a page for creating and view pasties. 
+ * 
+ * @package pastie
+ * @subpackage core
+ * @author Hamish Campbell <hn.campbell@gmail.com>
+ */
 class PastiePage extends Page {
 	
 	static $db = array(
-		'CanCreateMode' => "Enum('Anyone, Logged In Users, Specific Users', 'Logged In Users')",
+		'CanCreateMode' => "Enum('Anyone, LoggedInUsers, SpecificUsers', 'LoggedInUsers')",
 		'MaximumPastieSize' => 'Int',
 	);
 	
@@ -15,18 +31,34 @@ class PastiePage extends Page {
 		'CanCreateGroups' => 'Group',
 	);
 	
+	function i18nCreateModes() {
+		$modes = $this->dbObject('CanCreateMode')->enumValues();
+		foreach($modes as $key => $value)
+			$modes[$key] = _t('PastieSnippet.' . strtoupper($value), $value);
+		return $modes;
+	}
+	
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
-		$fields->addFieldToTab('Root.Behaviour', new OptionSetField(
-			'CanCreateMode', 'Who can create Pasties?', $this->dbObject('CanCreateMode')->enumValues()
-		));
-		$fields->addFieldToTab('Root.Behaviour', new TreeMultiselectField('CanCreateGroups', 'Specific User Groups'));
-		$fields->addFieldToTab('Root.Behaviour', new NumericField('MaximumPastieSize', 'Maximum Pastie Content Length'));
+		$tab = $fields->findOrMakeTab('Root.Behaviour');
+		$tab->push(new OptionSetField('CanCreateMode', _t('PastieSnippet.WHOCANCREATE', 'Who can create Snippets?'), $this->i18nCreateModes()));
+		$tab->push(new TreeMultiselectField('CanCreateGroups', _t('PastieSnippet.SPECIFICGROUPS', 'Specific User Groups')));
+		$tab->push(new NumericField('MaximumPastieSize', _t('PastieSnippet.MAXCONTENTLENGTH', 'Maximum Content Length')));
 		return $fields;
 	}
 	
 	function LatestSnippets($limit = 10) {
 		return DataObject::get('PastieSnippet', null, 'Created DESC', null, $limit);
+	}
+	
+	function getPastieSingularName($lowercase = false) {
+		$p = new PastieSnippet();
+		return $p->getSingularName($lowercase);
+	}
+	
+	function getPastiePluralName($lowercase = false) {
+		$p = new PastieSnippet();
+		return $p->getPluralName($lowercase);
 	}
 	
 	function CanCreatePastie() {
@@ -35,10 +67,10 @@ class PastiePage extends Page {
 			case "Anyone": 
 				$canCreate = true;
 				break;
-			case "Logged In Users": 
+			case "LoggedInUsers": 
 				$canCreate = (bool)Member::currentUserID();
 				break;
-			case "Specific Users":
+			case "SpecificUsers":
 				if($member = Member::currentUser())
 					$canCreate = $member->inGroups($this->CanCreateGroups());
 		}
@@ -50,15 +82,21 @@ class PastiePage extends Page {
 
 class PastiePage_Controller extends Page_Controller {
 	
+	static $allowed_actions = array(
+		'show',
+		'raw',
+		'preview',
+	);
+	
 	function Form() {
-		$formTitle = "Create a New Snippet";
+		$formTitle = _t('PastieSnippet.CREATENEW', "Create a New {$this->PastieSingularName}");
 		
 		if(!$this->CanCreatePastie()) return;
 		
 		$parentReference = "";
 		if($this->Action == 'show' && $snippet = PastieSnippet::get_by_reference($this->request->param('ID'))) {
 			$parentReference = $snippet->Reference;
-			$formTitle = "Create a Child Snippet";
+			$formTitle = _t('PastieSnippet.CREATECHILD', "Create a Child {$this->PastieSingularName}");
 		} else {
 			$snippet = new PastieSnippet();
 		}
@@ -68,25 +106,31 @@ class PastiePage_Controller extends Page_Controller {
 			'Form',
 			new FieldSet(
 				new HeaderField($formTitle, 3),
-				new TextField('Title', 'Title'),
-				new TextAreaField('Content', 'Content', $parentContent),
-				new DropdownField('Language', 'Language', PastieSnippet::get_valid_languages()->toDropdownMap('ID', 'Name'), 'php'),
+				new TextField('Title', _t('PastieSnippet.TITLE', 'Title')),
+				new TextAreaField('Content', _t('PastieSnippet.CONTENT', 'Content'), $parentContent),
+				new DropdownField('Language', _t('PastieSnippet.LANGUAGE', 'Language'), PastieSnippet::get_valid_languages()->toDropdownMap('ID', 'Name'), 'php'),
 				new HiddenField('ParentReference', 'ParentReference', $parentReference)
 			),
 			new FieldSet(
-				new FormAction('doSave', 'Save')
+				new FormAction('doSave', _t('PastieSnippet.SAVE', 'Save'))
 			)
 		);
 		$form->loadDataFrom($snippet);
 		return $form;
 	}
 	
+	/**
+	 * Show Action - Show a paricular snippet
+	 */
 	function show() {
 		$snippet = PastieSnippet::get_by_reference($this->request->param('ID'));
 		if(!$snippet) Director::redirect($this->Link());
 		return $this->customise(array('Snippet' => $snippet));
 	}
 	
+	/**
+	 * Raw Action - Output the raw content of this snippet
+	 */
 	function raw() {
 		$snippet = PastieSnippet::get_by_reference($this->request->param('ID'));
 		if(!$snippet) Director::redirect($this->Link());
@@ -97,6 +141,18 @@ class PastiePage_Controller extends Page_Controller {
 	}
 	
 	/**
+	 * Preview Action - Generates formatted output from POST vars
+	 */
+	function preview() {
+		$content = isset($_POST['content']) ? (string)$_POST['content'] : "";
+		$lang = isset($_POST['lang']) ? (string)$_POST['lang'] : 'php';
+		if(!Director::is_ajax()) Director::redirectBack();
+		$snippet = new PastieSnippet();
+		$snippet->Language = $lang;
+		$snippet->Content = $content;
+		return $snippet->FormattedOutput;
+	}
+	/**
 	 * @param $data
 	 * @param $form
 	 */
@@ -104,18 +160,18 @@ class PastiePage_Controller extends Page_Controller {
 		if(!$this->CanCreatePastie()) return Security::permissionFailure();
 		
 		if(!isset($data['Content']) || strlen($data['Content']) == 0) {
-			$form->sessionMessage('Content cannot be empty.', 'warning');
+			$form->sessionMessage(_t('PastieSnippet.CONTENTEMPTYERROR', 'Content cannot be empty.'), 'warning');
 			return Director::redirectBack();
 		}
 		if($this->MaximumPastieSize && strlen($data['Content']) > $this->MaximumPastieSize) {
-			$form->sessionMessage('Content cannot exceed ' . $this->MaximumPastieSize . ' characters.');
+			$form->sessionMessage(_t('PastieSnippet.CONTENTTOOLARGE', 'Content exceeds maximum length.'), 'warning');
 			return Director::redirectBack();
 		}
 		
 		$languages = PastieSnippet::get_valid_languages();
 		if(!isset($data['Language']) || !$languages->find('Name', $data['Language'])) {
-			$form->sessionMessage('Please select a valid language.', 'warning');
-			return Director::redirectBack();			
+			$form->sessionMessage(_t('PastieSnippet.SELECTVALIDLANGUAGE', 'Please select a valid language.'), 'warning');
+			return Director::redirectBack();
 		}
 		
 		$snippet = new PastieSnippet();
@@ -126,7 +182,7 @@ class PastiePage_Controller extends Page_Controller {
 		
 		$snippet->write();
 		
-		$form->sessionMessage('Saved', 'good');
+		$form->sessionMessage(_t('PastieSnippet.SAVEDNEW', 'New Snippet Created'), 'good');
 		Director::redirect($this->Link("show/{$snippet->Reference}"));
 	}
 }
