@@ -24,7 +24,7 @@ class PastieSnippet extends DataObject {
 	
 	static $db = array(
 		'Title' => 'Varchar',
-		'Content' => 'Text',
+		'Code' => 'Text',
 		'Language' => 'Varchar',
 		'Reference' => 'Varchar',
 	);
@@ -43,15 +43,6 @@ class PastieSnippet extends DataObject {
 	);
 	
 	static $default_sort = "Created DESC";
-	
-	/**
-	 * Set the code language - only valid GeSHi languages supported.
-	 * @param $lang
-	 */
-	function setLanguage($lang) {
-		$languages = self::get_valid_languages();
-		if($languages->find('Name', $lang)) $this->Language = $lang;
-	}
 	
 	/**
 	 * Return an i18n singular name - template accessible
@@ -77,7 +68,7 @@ class PastieSnippet extends DataObject {
 	 */
 	function getFormattedOutput() {
 		require_once dirname(__DIR__) . '/thirdparty/geshi/geshi.php';
-		$g = new GeSHi($this->Content, $this->Language);
+		$g = new GeSHi($this->Code, $this->Language);
 		$g->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
 		return $g->parse_code();
 	}
@@ -130,11 +121,12 @@ class PastieSnippet extends DataObject {
 	 * @param ShortcodeParser $instance
 	 */
 	static function shortcode_handler($args, $content = null, $instance = null) {
+		$content = str_replace('<br/>', "\n", $content);
 		if(isset($args['ref']) && $snippet = self::get_by_reference((string)$args['ref']))
 			return $snippet->FormattedOutput;
 		$snippet = new PastieSnippet();
 		$snippet->Language = (isset($args['lang'])) ? (string)$args['lang'] : 'php';
-		$snippet->Content = $content;
+		$snippet->Code = $content;
 		return $snippet->FormattedOutput;
 	}
 	
@@ -151,6 +143,7 @@ class PastieSnippet extends DataObject {
 				'ID' => $language, 
 				'Name' => $language
 			)));
+		$languages->sort('Name');
 		return $languages;
 	}
 	

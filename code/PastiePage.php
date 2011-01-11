@@ -83,6 +83,7 @@ class PastiePage extends Page {
 class PastiePage_Controller extends Page_Controller {
 	
 	static $allowed_actions = array(
+		'Form',
 		'show',
 		'raw',
 		'preview',
@@ -100,22 +101,21 @@ class PastiePage_Controller extends Page_Controller {
 		} else {
 			$snippet = new PastieSnippet();
 		}
-				
-				$form = new Form(
+		
+		$form = new Form(
 			$this,
 			'Form',
 			new FieldSet(
 				new HeaderField($formTitle, 3),
 				new TextField('Title', _t('PastieSnippet.TITLE', 'Title')),
-				new TextAreaField('Content', _t('PastieSnippet.CONTENT', 'Content'), $parentContent),
 				new DropdownField('Language', _t('PastieSnippet.LANGUAGE', 'Language'), PastieSnippet::get_valid_languages()->toDropdownMap('ID', 'Name'), 'php'),
+				new TextAreaField('Code', _t('PastieSnippet.CONTENT', 'Content'), 10),
 				new HiddenField('ParentReference', 'ParentReference', $parentReference)
 			),
 			new FieldSet(
 				new FormAction('doSave', _t('PastieSnippet.SAVE', 'Save'))
 			)
 		);
-		$form->loadDataFrom($snippet);
 		return $form;
 	}
 	
@@ -134,7 +134,7 @@ class PastiePage_Controller extends Page_Controller {
 	function raw() {
 		$snippet = PastieSnippet::get_by_reference($this->request->param('ID'));
 		if(!$snippet) Director::redirect($this->Link());
-		$response = new SS_HTTPResponse($snippet->Content);
+		$response = new SS_HTTPResponse($snippet->Code);
 		$response->addHeader('Content-type', 'text/plain');
 		$response->addHeader('Content-disposition', 'inline');
 		return $response;
@@ -149,7 +149,7 @@ class PastiePage_Controller extends Page_Controller {
 		if(!Director::is_ajax()) Director::redirectBack();
 		$snippet = new PastieSnippet();
 		$snippet->Language = $lang;
-		$snippet->Content = $content;
+		$snippet->Code = $content;
 		return $snippet->FormattedOutput;
 	}
 	/**
@@ -159,11 +159,11 @@ class PastiePage_Controller extends Page_Controller {
 	function doSave($data, $form) {
 		if(!$this->CanCreatePastie()) return Security::permissionFailure();
 		
-		if(!isset($data['Content']) || strlen($data['Content']) == 0) {
+		if(!isset($data['Code']) || strlen($data['Code']) == 0) {
 			$form->sessionMessage(_t('PastieSnippet.CONTENTEMPTYERROR', 'Content cannot be empty.'), 'warning');
 			return Director::redirectBack();
 		}
-		if($this->MaximumPastieSize && strlen($data['Content']) > $this->MaximumPastieSize) {
+		if($this->MaximumPastieSize && strlen($data['Code']) > $this->MaximumPastieSize) {
 			$form->sessionMessage(_t('PastieSnippet.CONTENTTOOLARGE', 'Content exceeds maximum length.'), 'warning');
 			return Director::redirectBack();
 		}

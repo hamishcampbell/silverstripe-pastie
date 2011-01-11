@@ -12,7 +12,7 @@ $Content
 		<% end_if %>
 		
 		<% if Children %>
-			<p><$ _t('CHILD', 'Child') %> $PluralName:</p>
+			<p><% _t('CHILD', 'Child') %> $PluralName:</p>
 			<% include PastieChildList %>
 		<% end_if %>
 	<% end_control %>
