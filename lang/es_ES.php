@@ -7,35 +7,35 @@
 
 global $lang;
 
-$lang['en_US']['PastieSnippet']['TITLE'] = 'Título';
-$lang['en_US']['PastieSnippet']['LANGUAGE'] = 'Idioma';
-$lang['en_US']['PastieSnippet']['CONTENT'] = 'Contenido';
-$lang['en_US']['PastieSnippet']['SAVE'] = 'Guardar';
-$lang['en_US']['PastieSnippet']['ANYONE'] = 'Nadie';
-$lang['en_US']['PastieSnippet']['LOGGEDINUSERS'] = 'Usuarios Registrados';
-$lang['en_US']['PastieSnippet']['SPECIFICUSERS'] = 'Usuarios Específicos';
-$lang['en_US']['PastieSnippet']['WHOCANCREATE'] = '¿Quién puede crear Fragmentos?';
-$lang['en_US']['PastieSnippet']['SPECIFICGROUPS'] = 'Los Grupos de Usuarios Específicos';
-$lang['en_US']['PastieSnippet']['MAXCONTENTLENGTH'] = 'Longitud Máximo del Contenido';
-$lang['en_US']['PastieSnippet']['SINGULARNAME'] = 'Fragmento';
-$lang['en_US']['PastieSnippet']['PLURALNAME'] = 'Fragmentos';
-$lang['en_US']['PastieSnippet']['CREATENEW'] = 'Crear Nuevo Fragmento';
-$lang['en_US']['PastieSnippet']['CREATECHILD'] = 'Crear Fragmento Nuevo de Niño';
+$lang['es_ES']['PastieSnippet']['TITLE'] = 'TÃ­tulo';
+$lang['es_ES']['PastieSnippet']['LANGUAGE'] = 'Idioma';
+$lang['es_ES']['PastieSnippet']['CONTENT'] = 'Contenido';
+$lang['es_ES']['PastieSnippet']['SAVE'] = 'Guardar';
+$lang['es_ES']['PastieSnippet']['ANYONE'] = 'Cualquiera';
+$lang['es_ES']['PastieSnippet']['LOGGEDINUSERS'] = 'Usuarios Registrados';
+$lang['es_ES']['PastieSnippet']['SPECIFICUSERS'] = 'Usuarios EspecÃ­ficos';
+$lang['es_ES']['PastieSnippet']['WHOCANCREATE'] = 'Â¿QuiÃ©n puede crear Fragmentos?';
+$lang['es_ES']['PastieSnippet']['SPECIFICGROUPS'] = 'Los Grupos de Usuarios EspecÃ­ficos';
+$lang['es_ES']['PastieSnippet']['MAXCONTENTLENGTH'] = 'Contenido MÃ¡ximo';
+$lang['es_ES']['PastieSnippet']['SINGULARNAME'] = 'Fragmento';
+$lang['es_ES']['PastieSnippet']['PLURALNAME'] = 'Fragmentos';
+$lang['es_ES']['PastieSnippet']['CREATENEW'] = 'Crear Fragmento Nuevo';
+$lang['es_ES']['PastieSnippet']['CREATECHILD'] = 'Crear Fragmento NiÃ±o';
 
-$lang['en_US']['PastieSnippet']['CONTENTEMPTYERROR'] = 'El contenido no puede estar vacío.';
-$lang['en_US']['PastieSnippet']['CONTENTTOOLARGE'] = 'Contenido supera la longitud máxima.';
-$lang['en_US']['PastieSnippet']['SELECTVALIDLANGUAGE'] = 'Por favor, seleccione un idioma válido.';
-$lang['en_US']['PastieSnippet']['SAVEDNEW'] = 'Nuevo Fragmento Creado';
+$lang['es_ES']['PastieSnippet']['CONTENTEMPTYERROR'] = 'El contenido no puede estar vacÃ­o.';
+$lang['es_ES']['PastieSnippet']['CONTENTTOOLARGE'] = 'Contenido supera la longitud mÃ¡xima.';
+$lang['es_ES']['PastieSnippet']['SELECTVALIDLANGUAGE'] = 'Por favor, seleccione un idioma vÃ¡lido.';
+$lang['es_ES']['PastieSnippet']['SAVEDNEW'] = 'Nuevo Fragmento Creado';
 
-$lang['en_US']['PastiePage.ss']['LATESTSNIPPETS'] = 'Fragmentos Más Reciente';
-$lang['en_US']['PastiePage.ss']['NOSNIPPETSFOUND'] = 'No hay fragmentos más reciente que se encuentran.';
+$lang['es_ES']['PastiePage.ss']['LATESTSNIPPETS'] = 'Fragmentos MÃ¡s Reciente';
+$lang['es_ES']['PastiePage.ss']['NOSNIPPETSFOUND'] = 'No se encuentran fragmentos mÃ¡s reciente.';
 
-$lang['en_US']['PastiePage_show.ss']['PARENT'] = 'Padre';
-$lang['en_US']['PastiePage_show.ss']['CHILD'] = 'Niño';
-$lang['en_US']['PastiePage_show.ss']['NOTFOUND'] = 'Fragmento no encontrado';
+$lang['es_ES']['PastiePage_show.ss']['PARENT'] = 'Padre';
+$lang['es_ES']['PastiePage_show.ss']['CHILD'] = 'NiÃ±o';
+$lang['es_ES']['PastiePage_show.ss']['NOTFOUND'] = 'No se encuentran el Fragmento';
 
-$lang['en_US']['PastieSnippetTitle.ss']['UNTITLED'] = 'Sin Título';
-$lang['en_US']['PastieSnippetTitle.ss']['CREATED'] = 'Creado';
-$lang['en_US']['PastieSnippetTitle.ss']['BY'] = 'por'
+$lang['es_ES']['PastieSnippetTitle.ss']['UNTITLED'] = 'Sin TÃ­tulo';
+$lang['es_ES']['PastieSnippetTitle.ss']['CREATED'] = 'Creado';
+$lang['es_ES']['PastieSnippetTitle.ss']['BY'] = 'por'
 
 ?>
