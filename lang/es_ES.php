@@ -1,6 +1,7 @@
 <?php
 /**
- * Spanish (Castellano) language pack
+ * Spanish language pack
+ * Paquete de idioma español
  * @package pastie
  * @subpackage i18n
  */
